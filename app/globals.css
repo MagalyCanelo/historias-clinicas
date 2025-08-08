@@ -66,3 +66,7 @@ body {
 .text-amarillo-hover:hover {
   color: #eec35c;
 }
+
+.title {
+  font-family: 'Passion One', sans-serif;
+}

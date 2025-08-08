@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Montserrat } from "next/font/google";
+import { Montserrat, Passion_One } from "next/font/google";
 
 import "./globals.css";
 
@@ -7,6 +7,13 @@ const montserratSans = Montserrat({
   subsets: ["latin"],
   variable: "--font-montserrat",
   display: "swap",
+});
+
+const passion_oneSans = Passion_One({
+  subsets: ["latin"],
+  variable: "--font-passion-one",
+  display: "swap",
+  weight: "700",
 });
 
 export const metadata: Metadata = {
@@ -21,7 +28,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${montserratSans.variable} antialiased`}>
+      <body
+        className={`${montserratSans.variable} ${passion_oneSans.variable} antialiased`}
+      >
         {children}
       </body>
     </html>
