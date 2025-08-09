@@ -44,11 +44,11 @@ body {
 }
 
 .bg-amarillo {
-  background-color: #ffd076;
+  background-color: #f7cb7a;
 }
 
 .bg-amarillo-hover:hover {
-  background-color: #eec35c;
+  background-color: #f1c357;
 }
 
 .text-celeste {
@@ -60,11 +60,11 @@ body {
 }
 
 .text-amarillo {
-  color: #ffd076;
+  color: #f7cb7a;
 }
 
 .text-amarillo-hover:hover {
-  color: #eec35c;
+  color: #f1c357;
 }
 
 .title {
