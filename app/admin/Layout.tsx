@@ -1,7 +1,9 @@
 "use client";
 import Link from "next/link";
+import { FiList, FiPlus } from "react-icons/fi";
 import { ReactNode, useState } from "react";
-import NavLeft from "./Components/NavLetf";
+import NavLeft from "./Components/NavLeft";
+import ListaMascotas from "./mascotas/lista";
 
 interface LayoutProps {
   children: ReactNode;
@@ -9,91 +11,168 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
   const [activeMenu, setActiveMenu] = useState("Inicio");
+  const [activeSubmenu, setActiveSubmenu] = useState<string>("");
 
   const handleMenuSelect = (menu: string) => {
     setActiveMenu(menu);
+    // 👉 al cambiar de menú, por defecto se muestra la primera opción
+    switch (menu) {
+      case "Mascotas":
+        setActiveSubmenu("Lista");
+        break;
+      case "Gestión de Tours":
+        setActiveSubmenu("Ver Tours");
+        break;
+      case "Gestión de Reservas":
+        setActiveSubmenu("Ver Reservas");
+        break;
+      case "Cancelaciones":
+        setActiveSubmenu("Ver Cancelaciones");
+        break;
+      case "Ajustes":
+        setActiveSubmenu("Configuraciones");
+        break;
+      default:
+        setActiveSubmenu("");
+    }
   };
 
+  // 🎨 estilos para los links
   const linkClass =
-    "flex items-center bg-lime-600 hover:bg-[#d7e99c] text-black px-4 py-[6px] rounded-md transition font-semibold text-white";
+    "flex items-center gap-2 bg-white hover:bg-gray-100 text-[#5ac6d2] px-4 py-[6px] rounded-md transition font-semibold";
 
+  // 🔹 Menú de arriba
   const renderHeaderLinks = () => {
     switch (activeMenu) {
-      case "Inicio":
+      case "Mascotas":
         return (
           <>
-            <Link href={"/administrador/"} className={linkClass}>
-              Inicio
-            </Link>
-            <Link href={"/administrador/agregar"} className={linkClass}>
-              Agregar sitio turístico
-            </Link>
-            <Link href={"/administrador/editar"} className={linkClass}>
-              Editar sitio turístico
-            </Link>
+            <button
+              onClick={() => setActiveSubmenu("Lista")}
+              className={linkClass}
+            >
+              <FiList size={18} /> Lista de Mascotas
+            </button>
+            <button
+              onClick={() => setActiveSubmenu("Agregar")}
+              className={linkClass}
+            >
+              <FiPlus size={18} /> Agregar Mascota
+            </button>
           </>
         );
       case "Gestión de Tours":
         return (
           <>
-            <Link
-              href={"/administrador/gestiontours/lista"}
+            <button
+              onClick={() => setActiveSubmenu("Ver Tours")}
               className={linkClass}
             >
               Ver Tours
-            </Link>
-            <Link
-              href={"/administrador/gestiontours/agregar"}
+            </button>
+            <button
+              onClick={() => setActiveSubmenu("Agregar Tour")}
               className={linkClass}
             >
               Agregar Nuevo Tour
-            </Link>
+            </button>
           </>
         );
       case "Gestión de Reservas":
         return (
           <>
-            <Link href={"/administrador/reservas"} className={linkClass}>
+            <button
+              onClick={() => setActiveSubmenu("Ver Reservas")}
+              className={linkClass}
+            >
               Ver Reservas
-            </Link>
-            <Link href={"/administrador/reservas/nueva"} className={linkClass}>
+            </button>
+            <button
+              onClick={() => setActiveSubmenu("Crear Reserva")}
+              className={linkClass}
+            >
               Crear Reserva
-            </Link>
+            </button>
           </>
         );
       case "Cancelaciones":
         return (
-          <Link href={"/administrador/cancelaciones"} className={linkClass}>
+          <button
+            onClick={() => setActiveSubmenu("Ver Cancelaciones")}
+            className={linkClass}
+          >
             Ver Cancelaciones
-          </Link>
+          </button>
         );
       case "Ajustes":
         return (
           <>
-            <Link href={"/administrador/ajustes"} className={linkClass}>
+            <button
+              onClick={() => setActiveSubmenu("Configuraciones")}
+              className={linkClass}
+            >
               Configuraciones
-            </Link>
-            <Link href={"/administrador/perfil"} className={linkClass}>
+            </button>
+            <button
+              onClick={() => setActiveSubmenu("Perfil")}
+              className={linkClass}
+            >
               Perfil
-            </Link>
+            </button>
           </>
         );
       default:
-        return null;
+        return (
+          <Link href={"/administrador/"} className={linkClass}>
+            Inicio
+          </Link>
+        );
     }
   };
 
+  // 🔹 Contenido dinámico de abajo
+  const renderContent = () => {
+    if (activeMenu === "Mascotas") {
+      if (activeSubmenu === "Lista") return <ListaMascotas />;
+      if (activeSubmenu === "Agregar")
+        return <div>Formulario para agregar mascota</div>;
+    }
+    if (activeMenu === "Gestión de Tours") {
+      if (activeSubmenu === "Ver Tours") return <div>Tabla de Tours</div>;
+      if (activeSubmenu === "Agregar Tour")
+        return <div>Formulario de nuevo tour</div>;
+    }
+    if (activeMenu === "Gestión de Reservas") {
+      if (activeSubmenu === "Ver Reservas") return <div>Tabla de Reservas</div>;
+      if (activeSubmenu === "Crear Reserva")
+        return <div>Formulario nueva reserva</div>;
+    }
+    if (activeMenu === "Cancelaciones")
+      return <div>Listado de cancelaciones</div>;
+    if (activeMenu === "Ajustes") {
+      if (activeSubmenu === "Configuraciones")
+        return <div>Configuraciones del sistema</div>;
+      if (activeSubmenu === "Perfil") return <div>Perfil de usuario</div>;
+    }
+    return <div>Selecciona una opción</div>;
+  };
+
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen bg-stone-50">
       {/* Menú lateral */}
       <NavLeft activeMenu={activeMenu} onSelectMenu={handleMenuSelect} />
 
       {/* Contenido */}
-      <div className="flex-1 flex flex-col">
-        <header className="bg-[#cbf199] border-b-4 border-[#588f10] flex gap-4 items-center justify-center p-4 rounded-lg rounded-b-none">
+      <div className="flex-1 flex flex-col p-4">
+        {/* 🔹 Header en celeste */}
+        <header className="bg-[#5ac6d2] border-b-4 border-[#45b0be] flex gap-4 items-center justify-center p-4 rounded-lg shadow">
           {renderHeaderLinks()}
         </header>
-        <main className="p-6">{children}</main>
+
+        {/* 🔹 Recuadro blanco para el contenido dinámico */}
+        <section className="bg-white border border-gray-200 mt-4 p-6 rounded-lg shadow text-gray-700">
+          {renderContent()}
+        </section>
       </div>
     </div>
   );
