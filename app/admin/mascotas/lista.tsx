@@ -39,7 +39,7 @@ export default function ListaMascotas() {
       {/* Barra de búsqueda */}
       <input
         type="text"
-        placeholder="🔍 Buscar por nombre o dueño..."
+        placeholder="🔍 Buscar por nombre o dueño"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         className="w-full mb-4 p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5ac6d2] transition"
@@ -48,7 +48,7 @@ export default function ListaMascotas() {
       {/* Tabla */}
       <div className="overflow-x-auto">
         <table className="w-full border border-gray-200 rounded-lg overflow-hidden">
-          <thead className="bg-sky-100 text-gray-700">
+          <thead className="bg-[#c4eff3] text-gray-700">
             <tr>
               <th className="p-3 text-left">Nombre</th>
               <th className="p-3 text-left">Especie</th>
@@ -59,7 +59,7 @@ export default function ListaMascotas() {
           </thead>
           <tbody>
             {filtered.map((m, i) => (
-              <tr key={i} className="hover:bg-sky-50 transition-colors">
+              <tr key={i} className="hover:bg-[#effdfd] transition-colors">
                 <td className="p-3">{m.nombre}</td>
                 <td className="p-3">{m.especie}</td>
                 <td className="p-3">{m.duenio}</td>
@@ -70,10 +70,10 @@ export default function ListaMascotas() {
                 >
                   {m.estado}
                 </td>
-                <td className="p-3 flex gap-5 justify-center text-sky-500">
-                  <FiEdit className="text-xl cursor-pointer hover:text-sky-700" />
-                  <FiXCircle className="text-xl cursor-pointer hover:text-sky-700" />
-                  <FiInfo className="text-xl cursor-pointer hover:text-sky-700" />
+                <td className="p-3 flex gap-5 justify-center text-celeste">
+                  <FiEdit className="text-xl cursor-pointer text-celeste-hover" />
+                  <FiXCircle className="text-xl cursor-pointer text-celeste-hover" />
+                  <FiInfo className="text-xl cursor-pointer text-celeste-hover" />
                 </td>
               </tr>
             ))}

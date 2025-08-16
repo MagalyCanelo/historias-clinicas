@@ -4,6 +4,9 @@ import { FiList, FiPlus } from "react-icons/fi";
 import { ReactNode, useState } from "react";
 import NavLeft from "./Components/NavLeft";
 import ListaMascotas from "./mascotas/lista";
+import Especies from "./configuracion/especies";
+import Razas from "./configuracion/razas";
+import Seguridad from "./configuracion/seguridad";
 
 interface LayoutProps {
   children: ReactNode;
@@ -15,40 +18,38 @@ export default function Layout({ children }: LayoutProps) {
 
   const handleMenuSelect = (menu: string) => {
     setActiveMenu(menu);
-    // 👉 al cambiar de menú, por defecto se muestra la primera opción
     switch (menu) {
       case "Mascotas":
-        setActiveSubmenu("Lista");
+        setActiveSubmenu("Lista Mascotas");
         break;
-      case "Gestión de Tours":
-        setActiveSubmenu("Ver Tours");
+      case "Historias Clínicas":
+        setActiveSubmenu("Ver Historias");
         break;
-      case "Gestión de Reservas":
-        setActiveSubmenu("Ver Reservas");
+      case "Clientes":
+        setActiveSubmenu("Lista Clientes");
         break;
-      case "Cancelaciones":
-        setActiveSubmenu("Ver Cancelaciones");
+      case "Personal":
+        setActiveSubmenu("Lista Personal");
         break;
-      case "Ajustes":
-        setActiveSubmenu("Configuraciones");
+      case "Configuración":
+        setActiveSubmenu("Especies");
         break;
       default:
         setActiveSubmenu("");
     }
   };
 
-  // 🎨 estilos para los links
   const linkClass =
     "flex items-center gap-2 bg-white hover:bg-gray-100 text-[#5ac6d2] px-4 py-[6px] rounded-md transition font-semibold";
 
-  // 🔹 Menú de arriba
+  // 🔹 Header dinámico
   const renderHeaderLinks = () => {
     switch (activeMenu) {
       case "Mascotas":
         return (
           <>
             <button
-              onClick={() => setActiveSubmenu("Lista")}
+              onClick={() => setActiveSubmenu("Lista Mascotas")}
               className={linkClass}
             >
               <FiList size={18} /> Lista de Mascotas
@@ -61,98 +62,118 @@ export default function Layout({ children }: LayoutProps) {
             </button>
           </>
         );
-      case "Gestión de Tours":
+      case "Historias Clínicas":
         return (
           <>
             <button
-              onClick={() => setActiveSubmenu("Ver Tours")}
+              onClick={() => setActiveSubmenu("Ver Historias")}
               className={linkClass}
             >
-              Ver Tours
+              Ver Historias Clínicas
             </button>
             <button
-              onClick={() => setActiveSubmenu("Agregar Tour")}
+              onClick={() => setActiveSubmenu("Nueva Historia")}
               className={linkClass}
             >
-              Agregar Nuevo Tour
+              Nueva Historia
             </button>
           </>
         );
-      case "Gestión de Reservas":
+      case "Clientes":
         return (
           <>
             <button
-              onClick={() => setActiveSubmenu("Ver Reservas")}
+              onClick={() => setActiveSubmenu("Lista Clientes")}
               className={linkClass}
             >
-              Ver Reservas
+              Lista de Clientes
             </button>
             <button
-              onClick={() => setActiveSubmenu("Crear Reserva")}
+              onClick={() => setActiveSubmenu("Agregar Cliente")}
               className={linkClass}
             >
-              Crear Reserva
+              Agregar Cliente
             </button>
           </>
         );
-      case "Cancelaciones":
-        return (
-          <button
-            onClick={() => setActiveSubmenu("Ver Cancelaciones")}
-            className={linkClass}
-          >
-            Ver Cancelaciones
-          </button>
-        );
-      case "Ajustes":
+      case "Personal":
         return (
           <>
             <button
-              onClick={() => setActiveSubmenu("Configuraciones")}
+              onClick={() => setActiveSubmenu("Lista Personal")}
               className={linkClass}
             >
-              Configuraciones
+              Lista de Personal
             </button>
             <button
-              onClick={() => setActiveSubmenu("Perfil")}
+              onClick={() => setActiveSubmenu("Agregar Personal")}
               className={linkClass}
             >
-              Perfil
+              Agregar Personal
+            </button>
+          </>
+        );
+      case "Configuración":
+        return (
+          <>
+            <button
+              onClick={() => setActiveSubmenu("Especies")}
+              className={linkClass}
+            >
+              Especies
+            </button>
+            <button
+              onClick={() => setActiveSubmenu("Razas")}
+              className={linkClass}
+            >
+              Razas
+            </button>
+            <button
+              onClick={() => setActiveSubmenu("Seguridad")}
+              className={linkClass}
+            >
+              Seguridad
             </button>
           </>
         );
       default:
         return (
-          <Link href={"/administrador/"} className={linkClass}>
+          <Link href={"/admin/"} className={linkClass}>
             Inicio
           </Link>
         );
     }
   };
 
-  // 🔹 Contenido dinámico de abajo
+  // 🔹 Contenido dinámico
   const renderContent = () => {
     if (activeMenu === "Mascotas") {
-      if (activeSubmenu === "Lista") return <ListaMascotas />;
+      if (activeSubmenu === "Lista Mascotas") return <ListaMascotas />;
       if (activeSubmenu === "Agregar")
         return <div>Formulario para agregar mascota</div>;
     }
-    if (activeMenu === "Gestión de Tours") {
-      if (activeSubmenu === "Ver Tours") return <div>Tabla de Tours</div>;
-      if (activeSubmenu === "Agregar Tour")
-        return <div>Formulario de nuevo tour</div>;
+    if (activeMenu === "Historias Clínicas") {
+      if (activeSubmenu === "Ver Historias")
+        return <div>Tabla de Historias Clínicas</div>;
+      if (activeSubmenu === "Nueva Historia")
+        return <div>Formulario Nueva Historia</div>;
     }
-    if (activeMenu === "Gestión de Reservas") {
-      if (activeSubmenu === "Ver Reservas") return <div>Tabla de Reservas</div>;
-      if (activeSubmenu === "Crear Reserva")
-        return <div>Formulario nueva reserva</div>;
+    if (activeMenu === "Clientes") {
+      if (activeSubmenu === "Lista Clientes")
+        return <div>Tabla de Clientes</div>;
+      if (activeSubmenu === "Agregar Cliente")
+        return <div>Formulario Nuevo Cliente</div>;
     }
-    if (activeMenu === "Cancelaciones")
-      return <div>Listado de cancelaciones</div>;
-    if (activeMenu === "Ajustes") {
-      if (activeSubmenu === "Configuraciones")
-        return <div>Configuraciones del sistema</div>;
-      if (activeSubmenu === "Perfil") return <div>Perfil de usuario</div>;
+    if (activeMenu === "Personal") {
+      if (activeSubmenu === "Lista Personal")
+        return <div>Tabla de Personal</div>;
+      if (activeSubmenu === "Agregar Personal")
+        return <div>Formulario Nuevo Personal</div>;
+    }
+    if (activeMenu === "Configuración") {
+      if (activeSubmenu === "Especies") return <Especies />;
+      if (activeSubmenu === "Razas") return <Razas />;
+      if (activeSubmenu === "Seguridad") return <Seguridad />;
     }
     return <div>Selecciona una opción</div>;
   };
@@ -169,7 +190,7 @@ export default function Layout({ children }: LayoutProps) {
           {renderHeaderLinks()}
         </header>
 
-        {/* 🔹 Recuadro blanco para el contenido dinámico */}
+        {/* 🔹 Contenido dinámico */}
         <section className="bg-white border border-gray-200 mt-4 p-6 rounded-lg shadow text-gray-700">
           {renderContent()}
         </section>
