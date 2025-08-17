@@ -186,12 +186,12 @@ export default function ListaRazas() {
       </div>
 
       {/* Tabla */}
-      <div className="overflow-x-auto">
-        <table className="w-full border border-gray-200 rounded-lg overflow-hidden">
+      <div className="overflow-x-auto w-full">
+        <table className="min-w-full border border-gray-200 rounded-lg overflow-hidden table-fixed">
           <thead className="bg-[#c4eff3] text-gray-700">
             <tr>
-              <th className="p-3 text-left">Raza</th>
-              <th className="p-3 text-left">Especie</th>
+              <th className="p-3 text-left truncate ">Raza</th>
+              <th className="p-3 text-left truncate ">Especie</th>
               <th className="p-3 text-center">Acciones</th>
             </tr>
           </thead>
@@ -201,8 +201,8 @@ export default function ListaRazas() {
                 especies.find((e) => e.id === r.especieId)?.nombre || "";
               return (
                 <tr key={r.id} className="hover:bg-[#effdfd] transition-colors">
-                  <td className="p-3">{r.nombre}</td>
-                  <td className="p-3">{especieNombre}</td>
+                  <td className="p-3 truncate">{r.nombre}</td>
+                  <td className="p-3 truncate">{especieNombre}</td>
                   <td className="p-3 flex gap-5 justify-center">
                     <FiEdit
                       className="text-xl cursor-pointer text-celeste hover:text-celeste-hover"

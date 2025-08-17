@@ -31,3 +31,11 @@ export type Personal = {
   rol: string;
   estado: boolean; // true = Activo, false = Inactivo
 };
+
+export type Cliente = {
+  id: string;
+  nombreCompleto: string;
+  dni: string;
+  celular: string;
+  estado: boolean;
+};
