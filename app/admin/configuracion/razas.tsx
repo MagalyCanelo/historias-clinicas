@@ -226,63 +226,67 @@ export default function ListaRazas() {
 
       {/* Modales */}
       {razaEliminar && (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-xl shadow-lg w-[350px] text-center border border-gray-200">
-            <h3 className="text-lg font-semibold mb-3">
-              ¿Estás seguro de eliminar?
-            </h3>
-            <p className="text-gray-600 mb-4">
-              Se eliminará la raza
-              <span className="font-medium">{razaEliminar.nombre}</span>.
-            </p>
-            <div className="flex justify-center gap-4">
-              <ButtonComponent
-                texto="Eliminar"
-                onClick={eliminarRaza}
-                className="bg-red-500 hover:bg-red-600 text-white"
-              />
-              <ButtonComponent
-                texto="Cancelar"
-                onClick={() => setRazaEliminar(null)}
-                className="bg-gray-200 hover:bg-gray-300"
-              />
+        <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-20 p-4">
+          <div className="fixed inset-0 flex items-center justify-center z-50">
+            <div className="bg-white p-6 rounded-xl shadow-lg w-[350px] text-center border border-gray-200">
+              <h3 className="text-lg font-semibold mb-3">
+                ¿Estás seguro de eliminar?
+              </h3>
+              <p className="text-gray-600 mb-4">
+                Se eliminará la raza{" "}
+                <span className="font-medium">{razaEliminar.nombre}</span>.
+              </p>
+              <div className="flex justify-center gap-4">
+                <ButtonComponent
+                  texto="Eliminar"
+                  onClick={eliminarRaza}
+                  className="bg-red-500 hover:bg-red-600 text-white"
+                />
+                <ButtonComponent
+                  texto="Cancelar"
+                  onClick={() => setRazaEliminar(null)}
+                  className="bg-gray-200 hover:bg-gray-300"
+                />
+              </div>
             </div>
           </div>
         </div>
       )}
 
       {razaEditar && (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-xl shadow-lg w-[400px] text-center border border-gray-200">
-            <h3 className="text-lg font-semibold mb-4">
-              Editar raza #{razaEditar.id}
-            </h3>
-            <input
-              type="text"
-              value={nombreEditar}
-              onChange={(e) => setNombreEditar(e.target.value)}
-              placeholder="Nombre de la raza"
-              className="w-full mb-4 p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5ac6d2]"
-            />
-            <select
-              value={especieEditar}
-              onChange={(e) => setEspecieEditar(e.target.value)}
-              className="w-full mb-4 p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5ac6d2]"
-            >
-              <option value="">Selecciona especie</option>
-              {especies.map((e) => (
-                <option key={e.id} value={e.id}>
-                  {e.nombre}
-                </option>
-              ))}
-            </select>
-            <div className="flex justify-center gap-4">
-              <ButtonComponent texto="Guardar" onClick={guardarEdicion} />
-              <ButtonComponent
-                texto="Cancelar"
-                onClick={() => setRazaEditar(null)}
-                className="bg-gray-200 hover:bg-gray-300"
+        <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-20 p-4">
+          <div className="fixed inset-0 flex items-center justify-center z-50">
+            <div className="bg-white p-6 rounded-xl shadow-lg w-[400px] text-center border border-gray-200">
+              <h3 className="text-lg font-semibold mb-4">
+                Editar raza #{razaEditar.id}
+              </h3>
+              <input
+                type="text"
+                value={nombreEditar}
+                onChange={(e) => setNombreEditar(e.target.value)}
+                placeholder="Nombre de la raza"
+                className="w-full mb-4 p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5ac6d2]"
               />
+              <select
+                value={especieEditar}
+                onChange={(e) => setEspecieEditar(e.target.value)}
+                className="w-full mb-4 p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5ac6d2]"
+              >
+                <option value="">Selecciona especie</option>
+                {especies.map((e) => (
+                  <option key={e.id} value={e.id}>
+                    {e.nombre}
+                  </option>
+                ))}
+              </select>
+              <div className="flex justify-center gap-4">
+                <ButtonComponent texto="Guardar" onClick={guardarEdicion} />
+                <ButtonComponent
+                  texto="Cancelar"
+                  onClick={() => setRazaEditar(null)}
+                  className="bg-gray-200 hover:bg-gray-300"
+                />
+              </div>
             </div>
           </div>
         </div>

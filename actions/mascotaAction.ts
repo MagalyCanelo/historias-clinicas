@@ -1,64 +1,65 @@
 import { db } from "@/lib/firebaseConfig";
-import { Pet } from "@/app/types/types";
+import { Mascota } from "@/app/types/types";
 import {
-  addDoc,
   collection,
+  deleteDoc,
   doc,
   getDocs,
   setDoc,
   updateDoc,
 } from "firebase/firestore";
 
-export async function agregarMascotaNueva(
-  mascota: Pet
-): Promise<string | null> {
-  const ref = doc(db, "mascotas", mascota.id);
-  return await setDoc(ref, mascota)
-    .then(() => {
-      return mascota.id;
-    })
-    .catch((error) => {
-      console.log(error);
-      return null;
-    });
+// Agregar nueva mascota
+export async function agregarMascotaNueva(mascota: Mascota): Promise<string | null> {
+  try {
+    const ref = doc(db, "mascotas", mascota.id);
+    await setDoc(ref, mascota);
+    return mascota.id;
+  } catch (error) {
+    console.error("Error al agregar mascota:", error);
+    return null;
+  }
 }
 
-export async function obtenerTodasLasMascotas(): Promise<Pet[]> {
+// Obtener todas las mascotas
+export async function obtenerTodasLasMascotas(): Promise<Mascota[]> {
   const ref = collection(db, "mascotas");
   const querySnapshot = await getDocs(ref);
-  const mascotas: Pet[] = [];
+  const mascotasList: Mascota[] = [];
   querySnapshot.forEach((doc) => {
-    mascotas.push(doc.data() as Pet);
+    mascotasList.push(doc.data() as Mascota);
   });
-  return mascotas;
+  return mascotasList;
 }
 
-export async function actualizarMascota(mascota: Pet): Promise<string | null> {
-  const ref = doc(db, "mascotas", mascota.id);
-  return await updateDoc(ref, {
-    name: mascota.name,
-  })
-    .then(() => {
-      return mascota.id;
-    })
-    .catch((error) => {
-      console.log(error);
-      return null;
+// Actualizar mascota
+export async function actualizarMascotaFirebase(mascota: Mascota): Promise<boolean> {
+  try {
+    const ref = doc(db, "mascotas", mascota.id);
+    await updateDoc(ref, {
+      nombre: mascota.nombre,
+      especieId: mascota.especieId,       
+      razaId: mascota.razaId,           
+      fechaNacimiento: mascota.fechaNacimiento,
+      color: mascota.color,
+      duenoId: mascota.duenoId,  
+      estado: mascota.estado,
     });
+    return true;
+  } catch (error) {
+    console.error("Error al actualizar mascota:", error);
+    return false;
+  }
 }
 
-
-export async function listarElementosNoSuspendidos(){
-    const ref = collection(db, "mascotas");
-    const querySnapshot = await getDocs(ref);
-    const mascotas: Pet[] = [];
-    querySnapshot.forEach((doc) => {
-      const pet = doc.data() as Pet;
-      if (!pet.suspend) {
-        mascotas.push(pet);
-      }
-    });
-    return mascotas;
-
-
+// Eliminar mascota
+export async function eliminarMascotaFirebase(id: string): Promise<boolean> {
+  try {
+    const ref = doc(db, "mascotas", id);
+    await deleteDoc(ref);
+    return true;
+  } catch (error) {
+    console.error("Error al eliminar mascota:", error);
+    return false;
+  }
 }

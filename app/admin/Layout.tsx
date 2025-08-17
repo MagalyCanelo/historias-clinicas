@@ -1,9 +1,9 @@
 "use client";
 import Link from "next/link";
-import { FiList, FiPlus } from "react-icons/fi";
 import { ReactNode, useState } from "react";
 import NavLeft from "./Components/NavLeft";
-import ListaMascotas from "./mascotas/lista";
+import Mascotas from "./mascotas/lista";
+import AgregarMascotas from "./mascotas/agregar";
 import Cliente from "./clientes/lista";
 import AgregarCliente from "./clientes/agregar";
 import Personal from "./personal/lista";
@@ -56,13 +56,13 @@ export default function Layout({ children }: LayoutProps) {
               onClick={() => setActiveSubmenu("Lista Mascotas")}
               className={linkClass}
             >
-              <FiList size={18} /> Lista de Mascotas
+              Lista de Mascotas
             </button>
             <button
               onClick={() => setActiveSubmenu("Agregar")}
               className={linkClass}
             >
-              <FiPlus size={18} /> Agregar Mascota
+              Agregar Mascota
             </button>
           </>
         );
@@ -152,9 +152,9 @@ export default function Layout({ children }: LayoutProps) {
   // 🔹 Contenido dinámico
   const renderContent = () => {
     if (activeMenu === "Mascotas") {
-      if (activeSubmenu === "Lista Mascotas") return <ListaMascotas />;
+      if (activeSubmenu === "Lista Mascotas") return <Mascotas />;
       if (activeSubmenu === "Agregar")
-        return <div>Formulario para agregar mascota</div>;
+        return <AgregarMascotas setActiveSubmenu={setActiveSubmenu} />;
     }
     if (activeMenu === "Historias Clínicas") {
       if (activeSubmenu === "Ver Historias")

@@ -1,17 +1,3 @@
-export type Pet = {
-  id: string;
-  name: string;
-  breed: string;
-  age: string;
-  weight: string;
-  color: string;
-  gender: string;
-  vaccinated: boolean;
-  microchipped: boolean;
-  description: string;
-  suspend?: boolean;
-};
-
 export type Especie = {
   id: string;
   nombre: string;
@@ -37,5 +23,17 @@ export type Cliente = {
   nombreCompleto: string;
   dni: string;
   celular: string;
+  genero: string;
   estado: boolean;
 };
+
+export interface Mascota {
+  id: string;
+  nombre: string;
+  especieId: string;
+  razaId: string;
+  fechaNacimiento: string;
+  color: string;
+  duenoId: string;
+  estado: boolean;
+}

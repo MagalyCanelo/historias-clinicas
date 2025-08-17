@@ -136,26 +136,28 @@ export default function ListaEspecies() {
 
       {/* Modal eliminar */}
       {especieEliminar && (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-xl shadow-lg w-[350px] text-center border border-gray-200">
-            <h3 className="text-lg font-semibold mb-3">
-              ¿Estás seguro de eliminar?
-            </h3>
-            <p className="text-gray-600 mb-4">
-              Se eliminará la especie{" "}
-              <span className="font-medium">{especieEliminar.nombre}</span>.
-            </p>
-            <div className="flex justify-center gap-4">
-              <ButtonComponent
-                texto="Eliminar"
-                onClick={eliminarEspecie}
-                className="bg-red-500 hover:bg-red-600 text-white"
-              />
-              <ButtonComponent
-                texto="Cancelar"
-                onClick={() => setEspecieEliminar(null)}
-                className="bg-gray-200 hover:bg-gray-300"
-              />
+        <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-20 p-4">
+          <div className="fixed inset-0 flex items-center justify-center z-50">
+            <div className="bg-white p-6 rounded-xl shadow-lg w-[350px] text-center border border-gray-200">
+              <h3 className="text-lg font-semibold mb-3">
+                ¿Estás seguro de eliminar?
+              </h3>
+              <p className="text-gray-600 mb-4">
+                Se eliminará la especie{" "}
+                <span className="font-medium">{especieEliminar.nombre}</span>.
+              </p>
+              <div className="flex justify-center gap-4">
+                <ButtonComponent
+                  texto="Eliminar"
+                  onClick={eliminarEspecie}
+                  className="bg-red-500 hover:bg-red-600 text-white"
+                />
+                <ButtonComponent
+                  texto="Cancelar"
+                  onClick={() => setEspecieEliminar(null)}
+                  className="bg-gray-200 hover:bg-gray-300"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -163,24 +165,26 @@ export default function ListaEspecies() {
 
       {/* Modal editar */}
       {especieEditar && (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-xl shadow-lg w-[400px] text-center border border-gray-200">
-            <h3 className="text-lg font-semibold mb-4">Editar especie</h3>
-            <InputComponent
-              value={nombreEditar}
-              onChange={(e) => setNombreEditar(e.target.value)}
-            />
-            <div className="flex justify-center gap-4 mt-2">
-              <ButtonComponent
-                texto="Guardar"
-                onClick={guardarEdicion}
-                className="bg-[#5ac6d2] hover:bg-[#4ab0bb] text-white"
+        <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-20 p-4">
+          <div className="fixed inset-0 flex items-center justify-center z-50">
+            <div className="bg-white p-6 rounded-xl shadow-lg w-[400px] text-center border border-gray-200">
+              <h3 className="text-lg font-semibold mb-4">Editar especie</h3>
+              <InputComponent
+                value={nombreEditar}
+                onChange={(e) => setNombreEditar(e.target.value)}
               />
-              <ButtonComponent
-                texto="Cancelar"
-                onClick={() => setEspecieEditar(null)}
-                className="bg-gray-200 hover:bg-gray-300"
-              />
+              <div className="flex justify-center gap-4 mt-2">
+                <ButtonComponent
+                  texto="Guardar"
+                  onClick={guardarEdicion}
+                  className="bg-[#5ac6d2] hover:bg-[#4ab0bb] text-white"
+                />
+                <ButtonComponent
+                  texto="Cancelar"
+                  onClick={() => setEspecieEditar(null)}
+                  className="bg-gray-200 hover:bg-gray-300"
+                />
+              </div>
             </div>
           </div>
         </div>
