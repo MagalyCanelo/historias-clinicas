@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { FiEdit, FiXCircle } from "react-icons/fi";
 import { db } from "@/lib/firebaseConfig";
+import ButtonComponent from "../Components/ButtonComponent";
 import {
   collection,
   doc,
@@ -22,26 +23,6 @@ interface Raza {
   nombre: string;
   especieId: string;
 }
-
-interface ButtonProps {
-  texto: string;
-  onClick: () => void;
-  color?: string;
-}
-
-const ButtonComponent = ({
-  texto,
-  onClick,
-  color = "#5ac6d2",
-}: ButtonProps) => (
-  <button
-    onClick={onClick}
-    className="px-4 py-2 rounded-lg text-white transition hover:opacity-90"
-    style={{ backgroundColor: color }}
-  >
-    {texto}
-  </button>
-);
 
 export default function ListaRazas() {
   const [razas, setRazas] = useState<Raza[]>([]);
@@ -79,19 +60,36 @@ export default function ListaRazas() {
     fetchData();
   }, []);
 
-  const filtered = razas.filter((r) => {
-    const especieNombre =
-      especies.find((e) => e.id === r.especieId)?.nombre || "";
-    return (
-      r.nombre.toLowerCase().includes(search.toLowerCase()) &&
-      (especieFiltro ? especieNombre === especieFiltro : true)
-    );
-  });
+  // Filtrar por raza o especie
+  const filtered = razas
+    .filter((r) => {
+      const especieNombre =
+        especies.find((e) => e.id === r.especieId)?.nombre || "";
+      const searchLower = search.toLowerCase();
+      return (
+        r.nombre.toLowerCase().includes(searchLower) ||
+        especieNombre.toLowerCase().includes(searchLower)
+      );
+    })
+    // Ordenar por especie alfabéticamente y luego por raza alfabéticamente
+    .sort((a, b) => {
+      const especieA = especies.find((e) => e.id === a.especieId)?.nombre || "";
+      const especieB = especies.find((e) => e.id === b.especieId)?.nombre || "";
+
+      if (especieA.toLowerCase() < especieB.toLowerCase()) return -1;
+      if (especieA.toLowerCase() > especieB.toLowerCase()) return 1;
+
+      // Si la especie es igual, ordenar por nombre de raza
+      if (a.nombre.toLowerCase() < b.nombre.toLowerCase()) return -1;
+      if (a.nombre.toLowerCase() > b.nombre.toLowerCase()) return 1;
+
+      return 0;
+    });
 
   const agregarRaza = async () => {
     if (!nuevoNombre || !nuevaEspecie) return;
 
-    const id = Date.now().toString(); // O puedes usar addDoc para generar ID automáticamente
+    const id = Date.now().toString();
     const nuevaRaza: Raza = {
       id,
       nombre: nuevoNombre,
@@ -168,7 +166,7 @@ export default function ListaRazas() {
       <div className="mb-4 flex gap-2 items-center">
         <input
           type="text"
-          placeholder="🔍 Buscar por raza"
+          placeholder="🔍 Buscar por raza o especie"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="flex-1 p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5ac6d2] transition"
@@ -234,19 +232,19 @@ export default function ListaRazas() {
               ¿Estás seguro de eliminar?
             </h3>
             <p className="text-gray-600 mb-4">
-              Se eliminará la raza{" "}
+              Se eliminará la raza
               <span className="font-medium">{razaEliminar.nombre}</span>.
             </p>
             <div className="flex justify-center gap-4">
               <ButtonComponent
                 texto="Eliminar"
                 onClick={eliminarRaza}
-                color="#f56565"
+                className="bg-red-500 hover:bg-red-600 text-white"
               />
               <ButtonComponent
                 texto="Cancelar"
                 onClick={() => setRazaEliminar(null)}
-                color="#a0aec0"
+                className="bg-gray-200 hover:bg-gray-300"
               />
             </div>
           </div>
@@ -283,7 +281,7 @@ export default function ListaRazas() {
               <ButtonComponent
                 texto="Cancelar"
                 onClick={() => setRazaEditar(null)}
-                color="#a0aec0"
+                className="bg-gray-200 hover:bg-gray-300"
               />
             </div>
           </div>

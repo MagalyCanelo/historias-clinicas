@@ -4,6 +4,8 @@ import { FiList, FiPlus } from "react-icons/fi";
 import { ReactNode, useState } from "react";
 import NavLeft from "./Components/NavLeft";
 import ListaMascotas from "./mascotas/lista";
+import Personal from "./personal/lista";
+import AgregarPersonal from "./personal/agregar";
 import Especies from "./configuracion/especies";
 import Razas from "./configuracion/razas";
 import Seguridad from "./configuracion/seguridad";
@@ -165,10 +167,9 @@ export default function Layout({ children }: LayoutProps) {
         return <div>Formulario Nuevo Cliente</div>;
     }
     if (activeMenu === "Personal") {
-      if (activeSubmenu === "Lista Personal")
-        return <div>Tabla de Personal</div>;
+      if (activeSubmenu === "Lista Personal") return <Personal />;
       if (activeSubmenu === "Agregar Personal")
-        return <div>Formulario Nuevo Personal</div>;
+        return <AgregarPersonal setActiveSubmenu={setActiveSubmenu} />;
     }
     if (activeMenu === "Configuración") {
       if (activeSubmenu === "Especies") return <Especies />;

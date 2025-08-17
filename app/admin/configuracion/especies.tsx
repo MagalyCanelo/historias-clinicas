@@ -76,9 +76,13 @@ export default function ListaEspecies() {
     }
   };
 
-  const filtered = especies.filter((e) =>
-    (e.nombre || "").toLowerCase().includes((search || "").toLowerCase())
-  );
+  // Filtrar especies según la búsqueda
+  const filtered = especies
+    .filter((e) =>
+      (e.nombre || "").toLowerCase().includes((search || "").toLowerCase())
+    )
+    // Orden alfabético
+    .sort((a, b) => a.nombre.localeCompare(b.nombre));
 
   return (
     <div className="text-gray-700">

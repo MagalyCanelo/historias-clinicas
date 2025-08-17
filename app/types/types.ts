@@ -22,3 +22,12 @@ export type Raza = {
   nombre: string;
   especieId: string; 
 };
+
+export type Personal = {
+  id: string;
+  nombre: string;
+  celular: string;
+  correo: string;
+  rol: string;
+  estado: boolean; // true = Activo, false = Inactivo
+};
