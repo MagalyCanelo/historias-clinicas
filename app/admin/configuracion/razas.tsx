@@ -1,6 +1,16 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FiEdit, FiXCircle } from "react-icons/fi";
+import { db } from "@/lib/firebaseConfig";
+import {
+  collection,
+  doc,
+  getDocs,
+  setDoc,
+  updateDoc,
+  deleteDoc,
+} from "firebase/firestore";
+import { actualizarRazaFirebase } from "@/actions/razaAction";
 
 interface Especie {
   id: string;
@@ -16,7 +26,7 @@ interface Raza {
 interface ButtonProps {
   texto: string;
   onClick: () => void;
-  color?: string; // color de fondo opcional
+  color?: string;
 }
 
 const ButtonComponent = ({
@@ -26,26 +36,16 @@ const ButtonComponent = ({
 }: ButtonProps) => (
   <button
     onClick={onClick}
-    className={`px-4 py-2 rounded-lg text-white transition hover:opacity-90`}
+    className="px-4 py-2 rounded-lg text-white transition hover:opacity-90"
     style={{ backgroundColor: color }}
   >
     {texto}
   </button>
 );
 
-// Datos de ejemplo
-const dataEspecies: Especie[] = [
-  { id: "1", nombre: "Perro" },
-  { id: "2", nombre: "Gato" },
-];
-
 export default function ListaRazas() {
-  const [razas, setRazas] = useState<Raza[]>([
-    { id: "1", nombre: "Labrador", especieId: "1" },
-    { id: "2", nombre: "Golden Retriever", especieId: "1" },
-    { id: "3", nombre: "Siamés", especieId: "2" },
-    { id: "4", nombre: "Persa", especieId: "2" },
-  ]);
+  const [razas, setRazas] = useState<Raza[]>([]);
+  const [especies, setEspecies] = useState<Especie[]>([]);
 
   const [search, setSearch] = useState("");
   const [especieFiltro, setEspecieFiltro] = useState("");
@@ -57,45 +57,85 @@ export default function ListaRazas() {
   const [especieEditar, setEspecieEditar] = useState("");
   const [razaEliminar, setRazaEliminar] = useState<Raza | null>(null);
 
+  // Cargar razas y especies desde Firebase
+  useEffect(() => {
+    const fetchData = async () => {
+      // Especies
+      const especieSnap = await getDocs(collection(db, "especies"));
+      const especiesData: Especie[] = especieSnap.docs.map((doc) => ({
+        id: doc.id,
+        ...(doc.data() as Omit<Especie, "id">),
+      }));
+      setEspecies(especiesData);
+
+      // Razas
+      const razaSnap = await getDocs(collection(db, "razas"));
+      const razasData: Raza[] = razaSnap.docs.map((doc) => ({
+        id: doc.id,
+        ...(doc.data() as Omit<Raza, "id">),
+      }));
+      setRazas(razasData);
+    };
+    fetchData();
+  }, []);
+
   const filtered = razas.filter((r) => {
     const especieNombre =
-      dataEspecies.find((e) => e.id === r.especieId)?.nombre || "";
+      especies.find((e) => e.id === r.especieId)?.nombre || "";
     return (
       r.nombre.toLowerCase().includes(search.toLowerCase()) &&
       (especieFiltro ? especieNombre === especieFiltro : true)
     );
   });
 
-  const agregarRaza = () => {
+  const agregarRaza = async () => {
     if (!nuevoNombre || !nuevaEspecie) return;
+
+    const id = Date.now().toString(); // O puedes usar addDoc para generar ID automáticamente
     const nuevaRaza: Raza = {
-      id: Date.now().toString(),
+      id,
       nombre: nuevoNombre,
       especieId: nuevaEspecie,
     };
-    setRazas([...razas, nuevaRaza]);
-    setNuevoNombre("");
-    setNuevaEspecie("");
+
+    try {
+      await setDoc(doc(db, "razas", id), nuevaRaza);
+      setRazas([...razas, nuevaRaza]);
+      setNuevoNombre("");
+      setNuevaEspecie("");
+    } catch (error) {
+      console.error("Error al agregar raza:", error);
+    }
   };
 
-  const guardarEdicion = () => {
-    if (!nombreEditar || !especieEditar) return;
-    setRazas(
-      razas.map((r) =>
-        r.id === razaEditar?.id
-          ? { ...r, nombre: nombreEditar, especieId: especieEditar }
-          : r
-      )
-    );
-    setRazaEditar(null);
-    setNombreEditar("");
-    setEspecieEditar("");
+  const guardarEdicion = async () => {
+    if (razaEditar) {
+      const razaActualizada: Raza = {
+        ...razaEditar,
+        nombre: nombreEditar,
+        especieId: especieEditar,
+      };
+
+      const exito = await actualizarRazaFirebase(razaActualizada);
+      if (exito) {
+        setRazas(
+          razas.map((r) => (r.id === razaEditar.id ? razaActualizada : r))
+        );
+        setRazaEditar(null);
+      }
+    }
   };
 
-  const eliminarRaza = () => {
+  const eliminarRaza = async () => {
     if (!razaEliminar) return;
-    setRazas(razas.filter((r) => r.id !== razaEliminar.id));
-    setRazaEliminar(null);
+
+    try {
+      await deleteDoc(doc(db, "razas", razaEliminar.id));
+      setRazas(razas.filter((r) => r.id !== razaEliminar.id));
+      setRazaEliminar(null);
+    } catch (error) {
+      console.error("Error al eliminar raza:", error);
+    }
   };
 
   return (
@@ -115,7 +155,7 @@ export default function ListaRazas() {
           className="p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5ac6d2]"
         >
           <option value="">Selecciona especie</option>
-          {dataEspecies.map((e) => (
+          {especies.map((e) => (
             <option key={e.id} value={e.id}>
               {e.nombre}
             </option>
@@ -139,7 +179,7 @@ export default function ListaRazas() {
           className="p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5ac6d2] h-10.5"
         >
           <option value="">Todas las especies</option>
-          {dataEspecies.map((e) => (
+          {especies.map((e) => (
             <option key={e.id} value={e.nombre}>
               {e.nombre}
             </option>
@@ -160,7 +200,7 @@ export default function ListaRazas() {
           <tbody>
             {filtered.map((r) => {
               const especieNombre =
-                dataEspecies.find((e) => e.id === r.especieId)?.nombre || "";
+                especies.find((e) => e.id === r.especieId)?.nombre || "";
               return (
                 <tr key={r.id} className="hover:bg-[#effdfd] transition-colors">
                   <td className="p-3">{r.nombre}</td>
@@ -186,7 +226,7 @@ export default function ListaRazas() {
         </table>
       </div>
 
-      {/* Modales (Eliminar y Editar) */}
+      {/* Modales */}
       {razaEliminar && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-xl shadow-lg w-[350px] text-center border border-gray-200">
@@ -232,7 +272,7 @@ export default function ListaRazas() {
               className="w-full mb-4 p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5ac6d2]"
             >
               <option value="">Selecciona especie</option>
-              {dataEspecies.map((e) => (
+              {especies.map((e) => (
                 <option key={e.id} value={e.id}>
                   {e.nombre}
                 </option>

@@ -1,57 +1,83 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Especie } from "@/app/types/types";
 import { FiEdit, FiXCircle } from "react-icons/fi";
 import ButtonComponent from "../Components/ButtonComponent";
 import InputComponent from "../Components/InputComponent";
-
-interface Especie {
-  id: number;
-  nombre: string;
-}
+import {
+  agregarEspecieNueva,
+  obtenerTodasLasEspecies,
+} from "@/actions/especieAction";
+import {
+  actualizarEspecieFirebase,
+  eliminarEspecieFirebase,
+} from "@/actions/especieAction";
+import { v4 } from "uuid";
 
 export default function ListaEspecies() {
-  const [especies, setEspecies] = useState<Especie[]>([
-    { id: 1, nombre: "Canino" },
-    { id: 2, nombre: "Felino" },
-  ]);
-
+  const [especies, setEspecies] = useState<Especie[]>([]);
   const [nuevaEspecie, setNuevaEspecie] = useState("");
   const [search, setSearch] = useState("");
   const [especieEliminar, setEspecieEliminar] = useState<Especie | null>(null);
   const [especieEditar, setEspecieEditar] = useState<Especie | null>(null);
   const [nombreEditar, setNombreEditar] = useState("");
 
-  const agregarEspecie = (e: React.FormEvent<HTMLFormElement>) => {
+  // Obtener todas las especies al cargar el componente
+  useEffect(() => {
+    obtenerTodasLasEspecies().then((data) => {
+      setEspecies(data);
+    });
+  }, []);
+
+  // Agregar especie con Firebase
+  const agregarEspecie = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!nuevaEspecie.trim()) return;
-    setEspecies([
-      ...especies,
-      { id: especies.length + 1, nombre: nuevaEspecie },
-    ]);
-    setNuevaEspecie("");
-  };
 
-  const eliminarEspecie = () => {
-    if (especieEliminar) {
-      setEspecies(especies.filter((e) => e.id !== especieEliminar.id));
-      setEspecieEliminar(null);
+    const especieConId: Especie = {
+      id: v4(),
+      nombre: nuevaEspecie.trim(),
+    };
+
+    const id = await agregarEspecieNueva(especieConId);
+    if (id) {
+      setEspecies((prev) => [...prev, especieConId]);
+      setNuevaEspecie("");
     }
   };
 
-  const guardarEdicion = () => {
+  // Guardar edición con Firebase
+  const guardarEdicion = async () => {
     if (especieEditar) {
-      setEspecies(
-        especies.map((e) =>
-          e.id === especieEditar.id ? { ...e, nombre: nombreEditar } : e
-        )
-      );
-      setEspecieEditar(null);
-      setNombreEditar("");
+      const especieActualizada: Especie = {
+        ...especieEditar,
+        nombre: nombreEditar,
+      };
+
+      const exito = await actualizarEspecieFirebase(especieActualizada);
+      if (exito) {
+        setEspecies((prev) =>
+          prev.map((e) => (e.id === especieEditar.id ? especieActualizada : e))
+        );
+        setEspecieEditar(null);
+        setNombreEditar("");
+      }
+    }
+  };
+
+  // Eliminar especie con Firebase
+  const eliminarEspecie = async () => {
+    if (especieEliminar) {
+      const exito = await eliminarEspecieFirebase(especieEliminar.id);
+      if (exito) {
+        setEspecies((prev) => prev.filter((e) => e.id !== especieEliminar.id));
+        setEspecieEliminar(null);
+      }
     }
   };
 
   const filtered = especies.filter((e) =>
-    e.nombre.toLowerCase().includes(search.toLowerCase())
+    (e.nombre || "").toLowerCase().includes((search || "").toLowerCase())
   );
 
   return (
@@ -75,7 +101,7 @@ export default function ListaEspecies() {
         <table className="w-full border border-gray-200 rounded-lg overflow-hidden table-fixed">
           <thead className="bg-[#c4eff3] text-gray-700">
             <tr>
-              <th className="p-3 text-left w-3/4 truncate">Nombre</th>
+              <th className="p-3 text-left w-3/4 truncate">Especie</th>
               <th className="p-3 text-center w-1/4">Acciones</th>
             </tr>
           </thead>
@@ -135,9 +161,7 @@ export default function ListaEspecies() {
       {especieEditar && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-xl shadow-lg w-[400px] text-center border border-gray-200">
-            <h3 className="text-lg font-semibold mb-4">
-              Editar especie #{especieEditar.id}
-            </h3>
+            <h3 className="text-lg font-semibold mb-4">Editar especie</h3>
             <InputComponent
               value={nombreEditar}
               onChange={(e) => setNombreEditar(e.target.value)}
