@@ -96,7 +96,7 @@ export default function ServiciosCarousel() {
     <section className="relative w-full bg-stone-50 py-8">
       <div className="mx-auto max-w-6xl px-2">
         <div className="text-center mb-8">
-          <h2 className="text-2xl md:text-3xl font-extrabold text-[#3fbdcb] tracking-tight">
+          <h2 className="text-2xl md:text-3xl font-extrabold text-celeste tracking-tight">
             Nuestros Servicios
           </h2>
           <div className="mt-2 w-24 h-1 bg-celeste mx-auto rounded-full"></div>
