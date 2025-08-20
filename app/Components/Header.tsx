@@ -66,9 +66,9 @@ const Header = () => {
             Inicio
           </Link>
           <Link
-            href="/aboutus"
+            href="/sobrenosotros"
             className={`no-underline text-amarillo-hover transition-colors ${
-              pathname === "/aboutus" ? "text-[#45b0be]" : ""
+              pathname === "/sobrenosotros" ? "text-[#45b0be]" : ""
             }`}
           >
             Sobre Nosotros

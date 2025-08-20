@@ -37,7 +37,14 @@ export default function ListaClientes() {
     return a.nombreCompleto.localeCompare(b.nombreCompleto);
   });
 
-  const camposOrden = ["dni", "nombreCompleto", "celular", "genero", "estado"];
+  const camposOrden = [
+    "dni",
+    "nombreCompleto",
+    "celular",
+    "correo",
+    "genero",
+    "estado",
+  ];
 
   const handleSuspend = async (c: Cliente) => {
     if (!c.id) return;
@@ -132,20 +139,6 @@ export default function ListaClientes() {
 
             <div className="mb-3">
               <label className="block text-sm font-medium text-gray-600">
-                Nombre completo
-              </label>
-              <input
-                type="text"
-                value={showEdit.nombreCompleto}
-                onChange={(e) =>
-                  setShowEdit({ ...showEdit, nombreCompleto: e.target.value })
-                }
-                className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5ac6d2]"
-              />
-            </div>
-
-            <div className="mb-3">
-              <label className="block text-sm font-medium text-gray-600">
                 DNI
               </label>
               <input
@@ -164,6 +157,20 @@ export default function ListaClientes() {
 
             <div className="mb-3">
               <label className="block text-sm font-medium text-gray-600">
+                Nombre completo
+              </label>
+              <input
+                type="text"
+                value={showEdit.nombreCompleto}
+                onChange={(e) =>
+                  setShowEdit({ ...showEdit, nombreCompleto: e.target.value })
+                }
+                className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5ac6d2]"
+              />
+            </div>
+
+            <div className="mb-3">
+              <label className="block text-sm font-medium text-gray-600">
                 Celular
               </label>
               <input
@@ -176,6 +183,22 @@ export default function ListaClientes() {
                   })
                 }
                 maxLength={9}
+                className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5ac6d2]"
+              />
+            </div>
+            <div className="mb-3">
+              <label className="block text-sm font-medium text-gray-600">
+                Correo
+              </label>
+              <input
+                type="email"
+                value={showEdit.correo || ""}
+                onChange={(e) =>
+                  setShowEdit({
+                    ...showEdit,
+                    correo: e.target.value,
+                  })
+                }
                 className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5ac6d2]"
               />
             </div>

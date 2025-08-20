@@ -13,7 +13,7 @@ import {
 export async function agregarClienteNuevo(cliente: Cliente): Promise<string | null> {
   try {
     const ref = doc(db, "clientes", cliente.id);
-    await setDoc(ref, cliente);
+    await setDoc(ref, cliente); 
     return cliente.id;
   } catch (error) {
     console.error("Error al agregar cliente:", error);
@@ -40,6 +40,7 @@ export async function actualizarClienteFirebase(cliente: Cliente): Promise<boole
       nombreCompleto: cliente.nombreCompleto,
       dni: cliente.dni,
       celular: cliente.celular,
+      correo: cliente.correo, 
       genero: cliente.genero,
       estado: cliente.estado,
     });

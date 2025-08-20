@@ -23,6 +23,7 @@ export type Cliente = {
   nombreCompleto: string;
   dni: string;
   celular: string;
+  correo: string;
   genero: string;
   estado: boolean;
 };

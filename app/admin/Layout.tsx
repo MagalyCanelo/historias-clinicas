@@ -11,6 +11,7 @@ import AgregarPersonal from "./personal/agregar";
 import Especies from "./configuracion/especies";
 import Razas from "./configuracion/razas";
 import Seguridad from "./configuracion/seguridad";
+import HistoriasClinicas from "./historiasclinicas/page";
 
 interface LayoutProps {
   children: ReactNode;
@@ -27,7 +28,7 @@ export default function Layout({ children }: LayoutProps) {
         setActiveSubmenu("Lista Mascotas");
         break;
       case "Historias Clínicas":
-        setActiveSubmenu("Ver Historias");
+        setActiveSubmenu("Control Antiparasitario");
         break;
       case "Clientes":
         setActiveSubmenu("Lista Clientes");
@@ -70,16 +71,28 @@ export default function Layout({ children }: LayoutProps) {
         return (
           <>
             <button
-              onClick={() => setActiveSubmenu("Ver Historias")}
+              onClick={() => setActiveSubmenu("Control Antiparasitario")}
               className={linkClass}
             >
-              Ver Historias Clínicas
+              Control Antiparasitario
             </button>
             <button
-              onClick={() => setActiveSubmenu("Nueva Historia")}
+              onClick={() => setActiveSubmenu("Vacunas")}
               className={linkClass}
             >
-              Nueva Historia
+              Vacunas
+            </button>
+            <button
+              onClick={() => setActiveSubmenu("Cirugias")}
+              className={linkClass}
+            >
+              Cirugías
+            </button>
+            <button
+              onClick={() => setActiveSubmenu("Baños & Peluqueria")}
+              className={linkClass}
+            >
+              Baños & Peluquería
             </button>
           </>
         );
@@ -157,11 +170,22 @@ export default function Layout({ children }: LayoutProps) {
         return <AgregarMascotas setActiveSubmenu={setActiveSubmenu} />;
     }
     if (activeMenu === "Historias Clínicas") {
-      if (activeSubmenu === "Ver Historias")
-        return <div>Tabla de Historias Clínicas</div>;
-      if (activeSubmenu === "Nueva Historia")
-        return <div>Formulario Nueva Historia</div>;
+      if (
+        activeSubmenu === "Control Antiparasitario" ||
+        activeSubmenu === "Vacunas" ||
+        activeSubmenu === "Cirugias" ||
+        activeSubmenu === "Baños & Peluqueria"
+      ) {
+        return (
+          <HistoriasClinicas
+            activeMenu={activeMenu}
+            activeSubmenu={activeSubmenu}
+            setActiveSubmenu={setActiveSubmenu}
+          />
+        );
+      }
     }
+
     if (activeMenu === "Clientes") {
       if (activeSubmenu === "Lista Clientes") return <Cliente />;
       if (activeSubmenu === "Agregar Cliente")
