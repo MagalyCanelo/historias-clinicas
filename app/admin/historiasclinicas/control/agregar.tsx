@@ -1,7 +1,7 @@
 import React from "react";
 
-function lista() {
+function agregar() {
   return <div></div>;
 }
 
-export default lista;
+export default agregar;

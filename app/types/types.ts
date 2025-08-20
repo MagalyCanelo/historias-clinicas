@@ -38,3 +38,44 @@ export interface Mascota {
   duenoId: string;
   estado: boolean;
 }
+
+export interface Vacuna {
+  id: string;
+  mascotaId: string;
+  tipoVacuna: string;
+  fechaAplicada: string;
+  proximaDosis: string;
+  observaciones: string;
+}
+
+export interface TipoVacuna {
+  id: string;          
+  nombre: string;      
+  especieId: string;  
+}
+
+export interface ControlAntiparasitario {
+  id: string;
+  mascotaId: string;
+  fechaAplicada: string;
+  productoUtilizado: string;
+  proximaAplicacion: string;
+  observaciones: string;
+}
+
+export interface Cirugia {
+  id: string;
+  mascotaId: string;
+  tipoCirugia: string;
+  fecha: string;
+  observaciones: string;
+  estado: string; // "Programada", "Realizada", "Cancelada"
+}
+
+export interface BanioPeluqueria {
+  id: string;
+  mascotaId: string;
+  tipoServicio: string;
+  fecha: string;
+  observaciones: string;
+}

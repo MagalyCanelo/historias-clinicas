@@ -18,7 +18,7 @@ export default function AgregarMascota({ setActiveSubmenu }: Props) {
   const [razaId, setRazaId] = useState("");
   const [fechaNacimiento, setFechaNacimiento] = useState("");
   const [color, setColor] = useState("");
-  const [dueñoId, setDueñoId] = useState("");
+  const [duenoId, setDuenoId] = useState("");
   const [estado, setEstado] = useState(true);
   const [loading, setLoading] = useState(false);
 
@@ -48,7 +48,7 @@ export default function AgregarMascota({ setActiveSubmenu }: Props) {
       razaId,
       fechaNacimiento,
       color,
-      dueñoId,
+      duenoId,
       estado,
     };
 
@@ -71,6 +71,7 @@ export default function AgregarMascota({ setActiveSubmenu }: Props) {
         <input
           type="text"
           value={nombre}
+          placeholder="Nombre de la mascota"
           onChange={(e) => setNombre(e.target.value)}
           className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#5ac6d2] transition"
           required
@@ -131,6 +132,7 @@ export default function AgregarMascota({ setActiveSubmenu }: Props) {
         <input
           type="text"
           value={color}
+          placeholder="Color"
           onChange={(e) => setColor(e.target.value)}
           className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#5ac6d2] transition"
           required
@@ -141,8 +143,8 @@ export default function AgregarMascota({ setActiveSubmenu }: Props) {
       <div className="flex-1 min-w-[45%]">
         <label className="block mb-1">Dueño</label>
         <select
-          value={dueñoId}
-          onChange={(e) => setDueñoId(e.target.value)}
+          value={duenoId}
+          onChange={(e) => setDuenoId(e.target.value)}
           className="w-full p-2 border border-gray-300 rounded h-10.5 focus:outline-none focus:ring-2 focus:ring-[#5ac6d2] transition"
           required
         >

@@ -56,6 +56,7 @@ export default function AgregarPersonal({ setActiveSubmenu }: Props) {
         <input
           type="text"
           value={nombre}
+          placeholder="Nombre completo"
           onChange={(e) => setNombre(e.target.value)}
           className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#5ac6d2] transition"
           required
@@ -71,6 +72,7 @@ export default function AgregarPersonal({ setActiveSubmenu }: Props) {
           onChange={(e) => setCelular(e.target.value.replace(/\D/g, ""))}
           maxLength={9}
           minLength={9}
+          placeholder="Celular (9 dígitos)"
           className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#5ac6d2] transition"
           required
         />
@@ -81,6 +83,7 @@ export default function AgregarPersonal({ setActiveSubmenu }: Props) {
         <input
           type="email"
           value={correo}
+          placeholder="Correo electrónico"
           onChange={(e) => setCorreo(e.target.value)}
           className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#5ac6d2] transition"
           required

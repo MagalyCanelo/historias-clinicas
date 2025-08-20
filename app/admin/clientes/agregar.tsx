@@ -65,6 +65,7 @@ export default function AgregarCliente({ setActiveSubmenu }: Props) {
           onChange={(e) => setDni(e.target.value.replace(/\D/g, ""))}
           maxLength={8}
           minLength={8}
+          placeholder="DNI (8 dígitos)"
           className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#5ac6d2] transition"
           required
         />
@@ -74,6 +75,7 @@ export default function AgregarCliente({ setActiveSubmenu }: Props) {
         <input
           type="text"
           value={nombreCompleto}
+          placeholder="Nombre completo"
           onChange={(e) => setNombreCompleto(e.target.value)}
           className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#5ac6d2] transition"
           required
@@ -88,6 +90,7 @@ export default function AgregarCliente({ setActiveSubmenu }: Props) {
           onChange={(e) => setCelular(e.target.value.replace(/\D/g, ""))}
           maxLength={9}
           minLength={9}
+          placeholder="Celular (9 dígitos)"
           className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#5ac6d2] transition"
           required
         />
@@ -97,6 +100,7 @@ export default function AgregarCliente({ setActiveSubmenu }: Props) {
         <input
           type="email"
           value={correo}
+          placeholder="Correo electrónico"
           onChange={(e) => setCorreo(e.target.value)}
           className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#5ac6d2] transition"
           required
