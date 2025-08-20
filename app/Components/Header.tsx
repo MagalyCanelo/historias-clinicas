@@ -95,7 +95,7 @@ const Header = () => {
         <div className="hidden lg:flex items-center space-x-4 relative">
           {userLogged ? (
             <>
-              <Link href="/mis-mascotas">
+              <Link href="/mismascotas">
                 <ActionButton tipo="primary" title="Mis Mascotas" />
               </Link>
               <div className="relative">
@@ -171,7 +171,7 @@ const Header = () => {
           {userLogged ? (
             <>
               <Link
-                href="/mis-mascotas"
+                href="/mismascotas"
                 onClick={() => setMenuOpen(false)}
                 className="block"
               >

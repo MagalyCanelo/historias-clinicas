@@ -93,7 +93,7 @@ export default function ServiciosCarousel() {
   }, [start, perPage]);
 
   return (
-    <section className="relative w-full bg-stone-50 py-8">
+    <section className="relative w-full bg-stone-50 pb-8 pt-12">
       <div className="mx-auto max-w-6xl px-2">
         <div className="text-center mb-8">
           <h2 className="text-2xl md:text-3xl font-extrabold text-celeste tracking-tight">
