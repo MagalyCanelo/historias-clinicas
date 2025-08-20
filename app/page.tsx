@@ -1,5 +1,6 @@
 import Comentario from "./Components/Comentario";
 import Contacto from "./Components/Contacto";
+import Footer from "./Components/Footer";
 import Galeria from "./Components/Galeria";
 import Header from "./Components/Header";
 import HeroBanner from "./Components/HeroBanner";
@@ -16,7 +17,7 @@ export default function Home() {
       <Galeria />
       <Comentario />
       <Contacto />
-      {/* <Footer /> */}
+      <Footer />
     </>
   );
 }
