@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { useRouter } from "next/navigation";
 import { Vacuna, Mascota, Cliente, Especie } from "@/app/types/types";
 import { agregarVacuna } from "@/actions/vacunaAction";
 import { obtenerTodasLasMascotas } from "@/actions/mascotaAction";
@@ -10,9 +9,13 @@ import { obtenerTodosLosClientes } from "@/actions/clienteAction";
 import { obtenerTodosLosTiposVacuna } from "@/actions/tipoVacunaAction";
 import { obtenerTodasLasEspecies } from "@/actions/especieAction";
 
-export default function AgregarVacuna() {
-  const router = useRouter();
+type AgregarVacunaProps = {
+  setActiveOption: React.Dispatch<
+    React.SetStateAction<"Lista de" | "Agregar" | "Tipos">
+  >;
+};
 
+export default function AgregarVacuna({ setActiveOption }: AgregarVacunaProps) {
   const [form, setForm] = useState<Vacuna>({
     id: uuidv4(),
     mascotaId: "",
@@ -24,8 +27,7 @@ export default function AgregarVacuna() {
 
   const [mascotas, setMascotas] = useState<Mascota[]>([]);
   const [clientes, setClientes] = useState<Cliente[]>([]);
-  const [especies, setEspecies] = useState<Especie[]>([]); // Cambié el tipo a Especie
-
+  const [especies, setEspecies] = useState<Especie[]>([]);
   const [tiposVacuna, setTiposVacuna] = useState<
     { id: string; nombre: string; especieId: string }[]
   >([]); // Agregar especieId
@@ -103,21 +105,27 @@ export default function AgregarVacuna() {
       alert("Selecciona una mascota válida");
       return;
     }
-    setLoading(true);
-    await agregarVacuna(form);
-    alert("Vacuna agregada!");
-    setForm({
-      id: uuidv4(),
-      mascotaId: "",
-      tipoVacuna: "",
-      fechaAplicada: "",
-      proximaDosis: "",
-      observaciones: "",
-    });
-    setFiltroMascota("");
-    setLoading(false);
 
-    router.push("/historias-clinicas/vacunas/lista");
+    setLoading(true);
+    const result = await agregarVacuna(form);
+
+    if (result) {
+      setForm({
+        id: uuidv4(),
+        mascotaId: "",
+        tipoVacuna: "",
+        fechaAplicada: "",
+        proximaDosis: "",
+        observaciones: "",
+      });
+      setFiltroMascota("");
+      setActiveOption("Lista de");
+    } else {
+      console.error("Error al agregar vacuna");
+      alert("Error al agregar vacuna");
+    }
+
+    setLoading(false);
   };
 
   // Filtrar mascotas mientras se escribe
@@ -129,13 +137,7 @@ export default function AgregarVacuna() {
       : [];
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="flex flex-wrap gap-4 w-full p-4 border rounded-md shadow"
-    >
-      <h2 className="w-full text-lg font-bold mb-2">Agregar Vacuna</h2>
-
-      {/* Selección de Mascota */}
+    <form onSubmit={handleSubmit} className="flex flex-wrap gap-4 w-full p-2">
       <div className="flex-1 min-w-[45%] relative">
         <label className="block mb-1">Mascota</label>
         <input

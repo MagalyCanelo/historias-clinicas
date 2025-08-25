@@ -148,7 +148,7 @@ export default function ListaVacunas() {
   };
 
   return (
-    <div className="text-gray-700">
+    <div className="text-gray-700 p-2">
       {/* Formulario agregar */}
       <div className="mb-4 flex gap-2 flex-wrap">
         <input

@@ -38,7 +38,7 @@ export default function AgregarCliente({ setActiveSubmenu }: Props) {
       nombreCompleto,
       dni,
       celular,
-      correo, // <-- agregado
+      correo,
       genero,
       estado,
     };

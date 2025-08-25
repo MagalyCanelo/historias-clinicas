@@ -36,7 +36,7 @@ export default function HistoriasClinicas({
           case "Lista de":
             return <ListaVacunas />;
           case "Agregar":
-            return <AgregarVacuna />;
+            return <AgregarVacuna setActiveOption={setActiveOption} />;
           case "Tipos":
             return <Vacunas />;
           default:
@@ -68,12 +68,7 @@ export default function HistoriasClinicas({
         ))}
       </div>
 
-      <div className="w-full">
-        <h2 className="mb-2 font-semibold text-lg">
-          {activeOption} {getSectionName()}
-        </h2>
-        {renderContent()}
-      </div>
+      <div className="w-full">{renderContent()}</div>
     </div>
   );
 }

@@ -68,6 +68,7 @@ export default function ListaClientes() {
       nombreCompleto: c.nombreCompleto,
       dni: c.dni,
       celular: c.celular,
+      correo: c.correo,
       genero: c.genero,
       estado: c.estado,
     });
@@ -200,6 +201,7 @@ export default function ListaClientes() {
                   })
                 }
                 className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5ac6d2]"
+                required
               />
             </div>
 

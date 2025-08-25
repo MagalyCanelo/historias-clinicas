@@ -32,7 +32,7 @@ function formatDate(value: any): string {
       month = parseInt(parts[1]);
       day = parseInt(parts[2]);
     } else {
-      return value; // si no es formato esperado
+      return value;
     }
   } else if (typeof value === "object" && "seconds" in value) {
     const d = new Date(value.seconds * 1000);

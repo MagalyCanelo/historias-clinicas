@@ -30,7 +30,7 @@ export function SocialLink({
 const Footer = () => {
   return (
     <>
-      <footer className="bg-[#FDFFF7] border-t-8 border-[#5ac6d2] text-gray-800 py-8 px-5 md:px-15">
+      <footer className="bg-stone-50 border-t-8 border-[#5ac6d2] text-gray-800 py-8 px-5 md:px-15">
         <div className="grid grid-cols-1 md:grid-cols-4 lg:gap-20 gap-8">
           {/* Logo y redes */}
           <div className="flex flex-col justify-center h-full max-md:border-b-2 max-md:pb-8 max-md:border-[#5ac6d2] md:border-0 md:pb-0">
