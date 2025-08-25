@@ -1,11 +1,23 @@
 "use client";
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
 import { FiEdit, FiXCircle } from "react-icons/fi";
+import { obtenerTodoElPersonal } from "@/actions/personalAction";
+import ButtonComponent from "../Components/ButtonComponent";
 
 interface Persona {
   id: string;
   nombre: string;
   rol: string;
+}
+
+interface Personal {
+  id: string;
+  nombre: string;
+  celular?: string;
+  correo?: string;
+  rol?: string;
+  estado?: string;
 }
 
 interface ButtonProps {
@@ -14,21 +26,7 @@ interface ButtonProps {
   color?: string;
 }
 
-const ButtonComponent = ({
-  texto,
-  onClick,
-  color = "#5ac6d2",
-}: ButtonProps) => (
-  <button
-    onClick={onClick}
-    className={`px-4 py-2 rounded-lg text-white transition hover:opacity-90`}
-    style={{ backgroundColor: color }}
-  >
-    {texto}
-  </button>
-);
-
-const roles = ["Administrador", "Asistente"];
+const roles = ["Solo Ver", "Editar"];
 
 export default function ListaRoles() {
   const [personas, setPersonas] = useState<Persona[]>([]);
@@ -41,12 +39,46 @@ export default function ListaRoles() {
   const [rolEditar, setRolEditar] = useState("");
   const [personaEliminar, setPersonaEliminar] = useState<Persona | null>(null);
 
+  // Para autocompletado
+  const [personalDb, setPersonalDb] = useState<Personal[]>([]);
+  const [mostrarSugerencias, setMostrarSugerencias] = useState(false);
+
+  // Cargar personal de Firebase al iniciar
+  useEffect(() => {
+    async function fetchPersonal() {
+      const data = await obtenerTodoElPersonal();
+
+      // Convertimos estado boolean a string
+      const personalConEstadoString = data.map((p) => ({
+        ...p,
+        estado:
+          typeof p.estado === "boolean"
+            ? p.estado
+              ? "activo"
+              : "inactivo"
+            : p.estado || "inactivo",
+      }));
+
+      setPersonalDb(personalConEstadoString);
+    }
+    fetchPersonal();
+  }, []);
+
+  // Filtrado para mostrar sugerencias (que contengan el texto escrito)
+  const sugerencias = personalDb.filter((p) =>
+    p.nombre.toLowerCase().includes(nuevoNombre.toLowerCase())
+  );
+
+  // Filtrar la tabla por búsqueda normal
   const filtered = personas.filter((p) =>
     p.nombre.toLowerCase().includes(search.toLowerCase())
   );
 
   const agregarPersona = () => {
     if (!nuevoNombre || !nuevoRol) return;
+
+    // Opcional: si quieres evitar nombres duplicados en personas, lo puedes checar aquí
+
     const nuevaPersona: Persona = {
       id: Date.now().toString(),
       nombre: nuevoNombre,
@@ -55,6 +87,7 @@ export default function ListaRoles() {
     setPersonas([...personas, nuevaPersona]);
     setNuevoNombre("");
     setNuevoRol("");
+    setMostrarSugerencias(false);
   };
 
   const guardarEdicion = () => {
@@ -77,17 +110,50 @@ export default function ListaRoles() {
     setPersonaEliminar(null);
   };
 
+  // Función para seleccionar sugerencia y ocultar lista
+  const seleccionarSugerencia = (nombre: string) => {
+    setNuevoNombre(nombre);
+    setMostrarSugerencias(false);
+  };
+
   return (
-    <div className="text-gray-700">
+    <div className="text-gray-700 relative">
       {/* Formulario agregar */}
-      <div className="mb-4 flex gap-2 flex-wrap">
-        <input
-          type="text"
-          placeholder="Nombre de la persona"
-          value={nuevoNombre}
-          onChange={(e) => setNuevoNombre(e.target.value)}
-          className="p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5ac6d2] flex-1 min-w-[150px]"
-        />
+      <div className="mb-4 flex gap-2 flex-wrap relative">
+        <div className="flex-1 min-w-[150px] relative">
+          <input
+            type="text"
+            placeholder="Nombre de la persona"
+            value={nuevoNombre}
+            onChange={(e) => {
+              setNuevoNombre(e.target.value);
+              setMostrarSugerencias(true);
+            }}
+            onBlur={() => {
+              // Esperar un poco para que click en sugerencia funcione antes de ocultar
+              setTimeout(() => setMostrarSugerencias(false), 100);
+            }}
+            onFocus={() => {
+              if (nuevoNombre.length > 0) setMostrarSugerencias(true);
+            }}
+            className="p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5ac6d2] w-full"
+            autoComplete="off"
+          />
+          {mostrarSugerencias && sugerencias.length > 0 && (
+            <ul className="absolute z-50 bg-white border border-gray-300 rounded-md mt-1 max-h-40 overflow-auto w-full shadow-lg">
+              {sugerencias.map((p) => (
+                <li
+                  key={p.id}
+                  onMouseDown={() => seleccionarSugerencia(p.nombre)}
+                  className="p-2 cursor-pointer hover:bg-[#5ac6d2] hover:text-white"
+                >
+                  {p.nombre}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
         <select
           value={nuevoRol}
           onChange={(e) => setNuevoRol(e.target.value)}
@@ -164,12 +230,12 @@ export default function ListaRoles() {
               <ButtonComponent
                 texto="Eliminar"
                 onClick={eliminarPersona}
-                color="#f56565"
+                className="bg-red-500 hover:bg-red-600 text-white"
               />
               <ButtonComponent
                 texto="Cancelar"
                 onClick={() => setPersonaEliminar(null)}
-                color="#a0aec0"
+                className="bg-gray-200 hover:bg-gray-300"
               />
             </div>
           </div>
@@ -204,7 +270,7 @@ export default function ListaRoles() {
               <ButtonComponent
                 texto="Cancelar"
                 onClick={() => setPersonaEditar(null)}
-                color="#a0aec0"
+                className="bg-gray-200 hover:bg-gray-300"
               />
             </div>
           </div>
