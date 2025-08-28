@@ -8,7 +8,7 @@ import {
   Cliente,
   Especie,
 } from "@/app/types/types";
-import { obtenerTodasVacunas } from "@/actions/vacunaAction";
+import { obtenerTodasVacunas, actualizarVacuna } from "@/actions/vacunaAction";
 import { obtenerTodasLasMascotas } from "@/actions/mascotaAction";
 import { obtenerTodosLosClientes } from "@/actions/clienteAction";
 import { obtenerTodasLasEspecies } from "@/actions/especieAction";
@@ -21,7 +21,6 @@ function formatDate(value: any): string {
   let year: number, month: number, day: number;
 
   if (typeof value === "string") {
-    // Caso: "2025-08-17"
     const parts = value.split("-");
     if (parts.length === 3) {
       year = parseInt(parts[0]);
@@ -58,6 +57,9 @@ export default function ListaVacunas() {
 
   const [search, setSearch] = useState("");
   const [showInfo, setShowInfo] = useState<Vacuna | null>(null);
+
+  const [showEdit, setShowEdit] = useState<Vacuna | null>(null);
+  const [loadingEdit, setLoadingEdit] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -96,6 +98,22 @@ export default function ListaVacunas() {
     return especie?.nombre || "—";
   }
 
+  // Guardar cambios edición
+  const handleSaveEdit = async () => {
+    if (!showEdit) return;
+    setLoadingEdit(true);
+    const success = await actualizarVacuna(showEdit);
+    setLoadingEdit(false);
+    if (success) {
+      setVacunas((prev) =>
+        prev.map((v) => (v.id === showEdit.id ? showEdit : v))
+      );
+      setShowEdit(null);
+    } else {
+      alert("Error al guardar cambios");
+    }
+  };
+
   return (
     <div className="relative text-gray-700 p-2">
       {/* Barra de búsqueda */}
@@ -128,6 +146,10 @@ export default function ListaVacunas() {
                 <td className="p-3">{getClienteNombre(v.mascotaId)}</td>
                 <td className="p-3">{getTipoVacunaNombre(v.tipoVacuna)}</td>
                 <td className="p-3 flex gap-4 justify-center">
+                  <FiEdit
+                    className="text-xl cursor-pointer text-celeste hover:text-celeste-hover"
+                    onClick={() => setShowEdit(v)}
+                  />
                   <FiInfo
                     className="text-xl cursor-pointer text-neutral-700 hover:text-neutral-900"
                     onClick={() => setShowInfo(v)}
@@ -181,6 +203,110 @@ export default function ListaVacunas() {
                 onClick={() => setShowInfo(null)}
               >
                 Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Editar */}
+      {showEdit && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-20 p-4">
+          <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md">
+            <h2 className="text-lg font-semibold mb-4">Editar Vacuna</h2>
+            {/* Tipo de vacuna */}
+            <div className="mb-3 w-full">
+              <label className="block text-sm font-medium text-gray-600">
+                Tipo de Vacuna
+              </label>
+              <select
+                name="tipoVacuna"
+                value={showEdit.tipoVacuna}
+                onChange={(e) =>
+                  setShowEdit({ ...showEdit, tipoVacuna: e.target.value })
+                }
+                className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5ac6d2]"
+                required
+              >
+                <option value="">Selecciona un tipo</option>
+                {tipoVacuna.map((tv) => (
+                  <option key={tv.id} value={tv.id}>
+                    {tv.nombre}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Fechas */}
+            <div className="mb-3">
+              <label className="block text-sm font-medium text-gray-600">
+                Fecha Aplicada
+              </label>
+              <input
+                type="date"
+                value={
+                  showEdit.fechaAplicada
+                    ? showEdit.fechaAplicada.substring(0, 10)
+                    : ""
+                }
+                onChange={(e) =>
+                  setShowEdit({
+                    ...showEdit,
+                    fechaAplicada: e.target.value,
+                  })
+                }
+                className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5ac6d2]"
+                required
+              />
+            </div>
+
+            <div className="mb-3">
+              <label className="block text-sm font-medium text-gray-600">
+                Próxima Dosis
+              </label>
+              <input
+                type="date"
+                value={
+                  showEdit.proximaDosis
+                    ? showEdit.proximaDosis.substring(0, 10)
+                    : ""
+                }
+                onChange={(e) =>
+                  setShowEdit({ ...showEdit, proximaDosis: e.target.value })
+                }
+                className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5ac6d2]"
+              />
+            </div>
+
+            {/* Observaciones */}
+            <div className="mb-3">
+              <label className="block text-sm font-medium text-gray-600">
+                Observaciones
+              </label>
+              <textarea
+                rows={3}
+                value={showEdit.observaciones || ""}
+                onChange={(e) =>
+                  setShowEdit({ ...showEdit, observaciones: e.target.value })
+                }
+                className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5ac6d2]"
+              />
+            </div>
+
+            <div className="flex justify-end gap-4 mt-6">
+              <button
+                className="px-4 py-2 rounded-lg bg-celeste text-white hover:bg-celeste-hover disabled:opacity-50"
+                onClick={handleSaveEdit}
+                disabled={loadingEdit}
+              >
+                {loadingEdit ? "Guardando" : "Guardar"}
+              </button>
+              <button
+                className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300"
+                onClick={() => setShowEdit(null)}
+                disabled={loadingEdit}
+              >
+                Cancelar
               </button>
             </div>
           </div>

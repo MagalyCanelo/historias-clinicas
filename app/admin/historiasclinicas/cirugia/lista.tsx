@@ -55,6 +55,7 @@ export default function ListaCirugias() {
   const [search, setSearch] = useState("");
   const [showInfo, setShowInfo] = useState<Cirugia | null>(null);
   const [showEdit, setShowEdit] = useState<Cirugia | null>(null);
+  const [loadingEdit, setLoadingEdit] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -89,7 +90,10 @@ export default function ListaCirugias() {
 
   const handleSaveEdit = async () => {
     if (!showEdit) return;
+    setLoadingEdit(true);
+    if (!showEdit) return;
     const success = await actualizarCirugia(showEdit);
+    setLoadingEdit(false);
     if (success) {
       setCirugias((prev) =>
         prev.map((c) => (c.id === showEdit.id ? showEdit : c))
@@ -245,13 +249,13 @@ export default function ListaCirugias() {
               <label className="block text-sm font-medium text-gray-600">
                 Observaciones
               </label>
-              <input
-                type="text"
-                className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5ac6d2]"
-                value={showEdit.observaciones}
+              <textarea
+                rows={3}
+                value={showEdit.observaciones || ""}
                 onChange={(e) =>
                   setShowEdit({ ...showEdit, observaciones: e.target.value })
                 }
+                className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5ac6d2]"
               />
             </div>
 
@@ -259,9 +263,11 @@ export default function ListaCirugias() {
               <button
                 className="px-4 py-2 bg-[#5ac6d2] hover:bg-[#4ab0bb] text-white rounded-lg"
                 onClick={handleSaveEdit}
+                disabled={loadingEdit}
               >
-                Guardar
+                {loadingEdit ? "Guardando" : "Guardar"}
               </button>
+
               <button
                 className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300"
                 onClick={() => setShowEdit(null)}
