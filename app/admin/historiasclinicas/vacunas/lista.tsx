@@ -101,7 +101,7 @@ export default function ListaVacunas() {
       {/* Barra de búsqueda */}
       <input
         type="text"
-        placeholder="🔍 Buscar por mascota o tipo"
+        placeholder="🔍 Buscar por mascota o vacuna"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         className="w-full mb-4 p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5ac6d2] transition"
@@ -114,7 +114,7 @@ export default function ListaVacunas() {
             <tr>
               <th className="p-3 text-left">Mascota</th>
               <th className="p-3 text-left">Dueño</th>
-              <th className="p-3 text-left">Tipo</th>
+              <th className="p-3 text-left">Vacuna</th>
               <th className="p-3 text-center">Acciones</th>
             </tr>
           </thead>

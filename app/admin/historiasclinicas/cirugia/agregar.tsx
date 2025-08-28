@@ -2,50 +2,55 @@
 
 import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { ControlAntiparasitario, Mascota, Cliente } from "@/app/types/types";
-import { agregarControl } from "@/actions/controlAction"; // función para guardar en firestore
+import { agregarCirugia } from "@/actions/cirugiaAction";
+import { obtenerTodosLosTiposCirugia } from "@/actions/tipoCirugiaAction";
 import { obtenerTodasLasMascotas } from "@/actions/mascotaAction";
 import { obtenerTodosLosClientes } from "@/actions/clienteAction";
+import { Cirugia, Mascota, Cliente } from "@/app/types/types";
 
-type AgregarControlProps = {
-  setActiveOption: React.Dispatch<React.SetStateAction<"Lista de" | "Agregar">>;
+type AgregarCirugiaProps = {
+  setActiveOption: React.Dispatch<
+    React.SetStateAction<"Lista de" | "Agregar" | "Tipos">
+  >;
 };
 
-export default function AgregarControl({
+export default function AgregarCirugia({
   setActiveOption,
-}: AgregarControlProps) {
-  const [form, setForm] = useState<ControlAntiparasitario>({
+}: AgregarCirugiaProps) {
+  const [form, setForm] = useState<Cirugia>({
     id: uuidv4(),
     mascotaId: "",
-    fechaAplicada: "",
-    productoUtilizado: "",
-    proximaAplicacion: "",
+    tipoCirugia: "",
+    fecha: "",
     observaciones: "",
+    estado: "Programada",
   });
 
   const [mascotas, setMascotas] = useState<Mascota[]>([]);
   const [clientes, setClientes] = useState<Cliente[]>([]);
+  const [tiposCirugia, setTiposCirugia] = useState<
+    { id: string; nombre: string }[]
+  >([]);
   const [filtroMascota, setFiltroMascota] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Obtener mascotas
+  // Cargar datos
   useEffect(() => {
-    const fetchMascotas = async () => {
-      const data = await obtenerTodasLasMascotas();
-      setMascotas(data);
+    const fetchData = async () => {
+      const [mascotasData, clientesData, tiposData] = await Promise.all([
+        obtenerTodasLasMascotas(),
+        obtenerTodosLosClientes(),
+        obtenerTodosLosTiposCirugia(),
+      ]);
+      setMascotas(mascotasData);
+      setClientes(clientesData);
+      setTiposCirugia(tiposData);
     };
-    fetchMascotas();
+
+    fetchData();
   }, []);
 
-  // Obtener clientes
-  useEffect(() => {
-    const fetchClientes = async () => {
-      const data = await obtenerTodosLosClientes();
-      setClientes(data);
-    };
-    fetchClientes();
-  }, []);
-
+  // Helpers
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -62,33 +67,33 @@ export default function AgregarControl({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.mascotaId) {
-      alert("Selecciona una mascota válida");
+
+    if (!form.mascotaId || !form.tipoCirugia || !form.fecha) {
+      alert("Completa todos los campos obligatorios.");
       return;
     }
 
     setLoading(true);
-    const result = await agregarControl(form);
+    const success = await agregarCirugia(form);
+    setLoading(false);
 
-    if (result) {
+    if (success) {
+      alert("Cirugía agregada correctamente.");
       setForm({
         id: uuidv4(),
         mascotaId: "",
-        fechaAplicada: "",
-        productoUtilizado: "",
-        proximaAplicacion: "",
+        tipoCirugia: "",
+        fecha: "",
         observaciones: "",
+        estado: "Programada",
       });
       setFiltroMascota("");
       setActiveOption("Lista de");
     } else {
-      alert("Error al agregar control");
+      alert("Error al guardar la cirugía.");
     }
-
-    setLoading(false);
   };
 
-  // Filtrado de mascotas
   const mascotasFiltradas =
     !form.mascotaId && filtroMascota
       ? mascotas.filter((m) =>
@@ -98,7 +103,7 @@ export default function AgregarControl({
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-wrap gap-4 w-full p-2">
-      {/* Buscar mascota */}
+      {/* Mascota */}
       <div className="flex-1 min-w-[45%] relative">
         <label className="block mb-1">Mascota</label>
         <input
@@ -108,8 +113,8 @@ export default function AgregarControl({
             setFiltroMascota(e.target.value);
             if (form.mascotaId) setForm({ ...form, mascotaId: "" });
           }}
-          placeholder="Escribe el nombre de la mascota"
-          className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#5ac6d2] transition"
+          placeholder="Buscar mascota"
+          className="w-full p-2 border border-gray-300 rounded focus:ring-[#5ac6d2] focus:outline-none focus:ring-2 transition"
           required
         />
         {mascotasFiltradas.length > 0 && (
@@ -127,59 +132,66 @@ export default function AgregarControl({
         )}
       </div>
 
-      {/* Mostrar dueño si mascota seleccionada */}
+      {/* Dueño */}
       {form.mascotaId && (
         <div className="flex-1 min-w-[45%]">
           <label className="block mb-1">Dueño</label>
           <input
             type="text"
+            disabled
             value={getDuenoNombre(
               mascotas.find((m) => m.id === form.mascotaId)?.duenoId || ""
             )}
-            disabled
-            className="w-full p-2 border border-gray-300 rounded bg-gray-50 text-gray-700"
+            className="w-full p-2 border border-gray-300 rounded bg-gray-100"
           />
         </div>
       )}
 
-      {/* Fecha aplicada */}
+      {/* Tipo de cirugía */}
       <div className="flex-1 min-w-[45%]">
-        <label className="block mb-1">Fecha Aplicada</label>
+        <label className="block mb-1">Tipo de Cirugía</label>
+        <select
+          name="tipoCirugia"
+          value={form.tipoCirugia}
+          onChange={handleChange}
+          className="w-full h-10.5 p-2 border border-gray-300 rounded focus:ring-[#5ac6d2] focus:outline-none focus:ring-2 transition"
+          required
+        >
+          <option value="">Selecciona un tipo</option>
+          {tiposCirugia.map((tipo) => (
+            <option key={tipo.id} value={tipo.id}>
+              {tipo.nombre}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Fecha */}
+      <div className="flex-1 min-w-[45%]">
+        <label className="block mb-1">Fecha</label>
         <input
           type="date"
-          name="fechaAplicada"
-          value={form.fechaAplicada}
+          name="fecha"
+          value={form.fecha}
           onChange={handleChange}
-          className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#5ac6d2] transition"
+          className="w-full h-10.5 p-2 border border-gray-300 rounded focus:ring-[#5ac6d2] focus:outline-none focus:ring-2 transition"
           required
         />
       </div>
 
-      {/* Próxima aplicación */}
+      {/* Estado */}
       <div className="flex-1 min-w-[45%]">
-        <label className="block mb-1">Próxima Aplicación</label>
-        <input
-          type="date"
-          name="proximaAplicacion"
-          value={form.proximaAplicacion}
+        <label className="block mb-1">Estado</label>
+        <select
+          name="estado"
+          value={form.estado}
           onChange={handleChange}
-          className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#5ac6d2] transition"
-          required
-        />
-      </div>
-
-      {/* Producto utilizado */}
-      <div className="w-full">
-        <label className="block mb-1">Producto Utilizado</label>
-        <input
-          type="text"
-          name="productoUtilizado"
-          value={form.productoUtilizado}
-          onChange={handleChange}
-          placeholder="Producto antiparasitario"
-          className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#5ac6d2] transition"
-          required
-        />
+          className="w-full h-10.5 p-2 border border-gray-300 rounded focus:ring-[#5ac6d2] focus:outline-none focus:ring-2 transition"
+        >
+          <option value="Programada">Programada</option>
+          <option value="Realizada">Realizada</option>
+          <option value="Cancelada">Cancelada</option>
+        </select>
       </div>
 
       {/* Observaciones */}
@@ -191,7 +203,7 @@ export default function AgregarControl({
           value={form.observaciones}
           onChange={handleChange}
           placeholder="Observaciones"
-          className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#5ac6d2] transition"
+          className="w-full p-2 border border-gray-300 rounded focus:ring-[#5ac6d2] focus:outline-none focus:ring-2 transition"
         />
       </div>
 
@@ -202,7 +214,7 @@ export default function AgregarControl({
           disabled={loading}
           className="w-full bg-[#5ac6d2] text-white p-2 rounded hover:bg-[#49b2c1] transition"
         >
-          {loading ? "Guardando" : "Agregar Control"}
+          {loading ? "Guardando" : "Agregar Cirugía"}
         </button>
       </div>
     </form>

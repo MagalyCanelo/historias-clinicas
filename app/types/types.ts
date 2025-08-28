@@ -72,7 +72,12 @@ export interface Cirugia {
   estado: string; // "Programada", "Realizada", "Cancelada"
 }
 
-export interface BanioPeluqueria {
+export interface TipoCirugia {
+  id: string;
+  nombre: string;
+}
+
+export interface Peluqueria {
   id: string;
   mascotaId: string;
   tipoServicio: string;

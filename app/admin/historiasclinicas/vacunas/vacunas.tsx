@@ -268,9 +268,7 @@ export default function ListaVacunas() {
         <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-20 p-4">
           <div className="fixed inset-0 flex items-center justify-center z-50">
             <div className="bg-white p-6 rounded-xl shadow-lg w-[400px] text-center border border-gray-200">
-              <h3 className="text-lg font-semibold mb-4">
-                Editar vacuna #{vacunaEditar.id}
-              </h3>
+              <h3 className="text-lg font-semibold mb-4">Editar vacuna</h3>
               <input
                 type="text"
                 value={nombreEditar}
