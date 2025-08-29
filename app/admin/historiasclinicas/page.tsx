@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 // Importa componentes reales
 import ListaVacunas from "./vacunas/lista";
@@ -21,18 +21,13 @@ interface HistoriasClinicasProps {
   setActiveSubmenu: Dispatch<SetStateAction<string>>;
 }
 
-// Tipos
-type OpcionVacunasCirugias = "Lista de" | "Agregar" | "Tipos";
-type OpcionControlPeluqueria = "Lista de" | "Agregar";
+type Opcion = "Lista de" | "Agregar" | "Tipos";
 
-// Configuración por submenu
-const submenuOptionsMap: Record<
-  string,
-  Array<"Lista de" | "Agregar" | "Tipos">
-> = {
+// Opciones por cada submenú
+const submenuOptionsMap: Record<string, Opcion[]> = {
   Vacunas: ["Lista de", "Agregar", "Tipos"],
-  Control: ["Lista de", "Agregar"],
-  Peluqueria: ["Lista de", "Agregar"],
+  Control: ["Lista de", "Agregar", "Tipos"],
+  Baños: ["Lista de", "Agregar", "Tipos"],
   Cirugias: ["Lista de", "Agregar", "Tipos"],
 };
 
@@ -42,11 +37,18 @@ export default function HistoriasClinicas({
   setActiveSubmenu,
 }: HistoriasClinicasProps) {
   const options = submenuOptionsMap[activeSubmenu] || [];
+  const [activeOption, setActiveOption] = useState<Opcion>(options[0]);
 
-  // Tipado general para activeOption
-  const [activeOption, setActiveOption] = useState<
-    OpcionVacunasCirugias | OpcionControlPeluqueria
-  >(options[0]);
+  // Reset option si cambia el submenu
+  useEffect(() => {
+    setActiveOption(submenuOptionsMap[activeSubmenu]?.[0] ?? "Lista de");
+  }, [activeSubmenu]);
+
+  const renderTiposPlaceholder = (nombre: string) => (
+    <div className="text-center text-gray-600 mt-4">
+      Aquí puedes mostrar los tipos de <strong>{nombre}</strong>.
+    </div>
+  );
 
   const renderContent = () => {
     switch (activeSubmenu) {
@@ -55,15 +57,7 @@ export default function HistoriasClinicas({
           case "Lista de":
             return <ListaVacunas />;
           case "Agregar":
-            return (
-              <AgregarVacuna
-                setActiveOption={
-                  setActiveOption as Dispatch<
-                    SetStateAction<OpcionVacunasCirugias>
-                  >
-                }
-              />
-            );
+            return <AgregarVacuna setActiveOption={setActiveOption} />;
           case "Tipos":
             return <Vacunas />;
         }
@@ -74,24 +68,20 @@ export default function HistoriasClinicas({
           case "Lista de":
             return <ListaControl />;
           case "Agregar":
-            return (
-              <AgregarControl
-                setActiveOption={
-                  setActiveOption as Dispatch<
-                    SetStateAction<OpcionControlPeluqueria>
-                  >
-                }
-              />
-            );
+            return <AgregarControl setActiveOption={setActiveOption} />;
+          case "Tipos":
+            return renderTiposPlaceholder("controles antiparasitarios");
         }
         break;
 
-      case "Peluquería":
+      case "Baños":
         switch (activeOption) {
           case "Lista de":
             return <ListaPeluqueria />;
           case "Agregar":
-            return <AgregarPeluqueria />;
+            return <AgregarPeluqueria setActiveOption={setActiveOption} />;
+          case "Tipos":
+            return renderTiposPlaceholder("baños y peluquería");
         }
         break;
 
@@ -100,22 +90,18 @@ export default function HistoriasClinicas({
           case "Lista de":
             return <ListaCirugia />;
           case "Agregar":
-            return (
-              <AgregarCirugia
-                setActiveOption={
-                  setActiveOption as Dispatch<
-                    SetStateAction<OpcionVacunasCirugias>
-                  >
-                }
-              />
-            );
+            return <AgregarCirugia setActiveOption={setActiveOption} />;
           case "Tipos":
             return <TiposCirugia />;
         }
         break;
     }
 
-    return null;
+    return (
+      <div className="text-center text-red-500">
+        No se encontró contenido para este submenú.
+      </div>
+    );
   };
 
   return (

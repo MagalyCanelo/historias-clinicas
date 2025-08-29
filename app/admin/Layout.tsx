@@ -28,7 +28,7 @@ export default function Layout({ children }: LayoutProps) {
         setActiveSubmenu("Lista Mascotas");
         break;
       case "Historias Clínicas":
-        setActiveSubmenu("Control Antiparasitario");
+        setActiveSubmenu("Control");
         break;
       case "Clientes":
         setActiveSubmenu("Lista Clientes");
@@ -71,7 +71,7 @@ export default function Layout({ children }: LayoutProps) {
         return (
           <>
             <button
-              onClick={() => setActiveSubmenu("Control Antiparasitario")}
+              onClick={() => setActiveSubmenu("Control")}
               className={linkClass}
             >
               Control Antiparasitario
@@ -89,7 +89,7 @@ export default function Layout({ children }: LayoutProps) {
               Cirugías
             </button>
             <button
-              onClick={() => setActiveSubmenu("Baños & Peluqueria")}
+              onClick={() => setActiveSubmenu("Baños")}
               className={linkClass}
             >
               Baños & Peluquería
@@ -171,10 +171,10 @@ export default function Layout({ children }: LayoutProps) {
     }
     if (activeMenu === "Historias Clínicas") {
       if (
-        activeSubmenu === "Control Antiparasitario" ||
+        activeSubmenu === "Control" ||
         activeSubmenu === "Vacunas" ||
         activeSubmenu === "Cirugias" ||
-        activeSubmenu === "Baños & Peluqueria"
+        activeSubmenu === "Baños"
       ) {
         return (
           <HistoriasClinicas
